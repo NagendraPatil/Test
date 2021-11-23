@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi&display=swap" rel="stylesheet">
+    <title>TRANSLATOR 2.0</title>
+    <style>
+        #cont {
+            width: 70%;
+            margin: 7% auto;
+            align-items: center;
+            text-align: center;
+            display: grid;
+            grid-template-columns: 48% 48%;
+            gap: 3%;
+        }
+
+        button {
+            width: 300px;
+            height: 40px;
+            display: block;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 10px auto;
+            font-size: 20px;
+            -webkit-text-stroke: 1px black;
+            -webkit-text-fill-color: white;
+            border-radius: 10px;
+            border: 1px solid #42A5F5;
+        }
+
+        #one,
+        #two {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            display: block;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-text-stroke: 1px black;
+            -webkit-text-fill-color: coral;
+        }
+
+        body {
+            font-family: 'Kaisei HarunoUmi', serif;
+            background-image: linear-gradient(to bottom right, #FFECB3, #E6EE9C, #42A5F5, #E57373);
+            background-repeat: no-repeat;
+            height: 800px;
+        }
+
+        label {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        textarea {
+            border-radius: 10px;
+            border: 1px solid #42A5F5;
+        }
+
+        select {
+            text-align: center;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid #42A5F5;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>TRANSLATOR 2.0</h1>
+    <div id="cont">
+        <div id="one">
+            <label>Translate From</label>
+            <select id="langfrom">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="es">Spanish</option>
+                <option value="ar">Arabic</option>
+                <option value="zh">Chinese</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="id">Indonesian</option>
+                <option value="ga">Irish</option>
+                <option value="it">Italian</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">KOrean</option>
+                <option value="pl">Polish</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="tr">Turkish</option>
+                <option value="Vi">Vietnemese</option>
+            </select>
+            <textarea id="ip" rows="10" cols="30"></textarea>
+        </div>
+        <div id="two">
+            <label>Translate To</label>
+            <select id="langto">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="es">Spanish</option>
+                <option value="ar">Arabic</option>
+                <option value="zh">Chinese</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="id">Indonesian</option>
+                <option value="ga">Irish</option>
+                <option value="it">Italian</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">KOrean</option>
+                <option value="pl">Polish</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="tr">Turkish</option>
+                <option value="Vi">Vietnemese</option>
+            </select>
+            <textarea id="textarea" rows="10" cols="30"></textarea>
+        </div>
+    </div>
+    <button type="button" id="btn" onclick="fun()">Translate</button>
+
+    <button type="button" id="n" onclick="fun2()">Read Aloud O/P</button>
+
+</body>
+
+</html>
+<script>
+    let opt = document.getElementById("textarea");
+
+    async function fun() {
+        let langfrom = document.getElementById("langfrom").value;
+        let langto = document.getElementById("langto").value;
+        let input = document.getElementById("ip").value;
+        const res = await fetch("https://libretranslate.de/translate", {
+            method: "POST",
+            body: JSON.stringify({
+                q: `${input}`,
+                source: `${langfrom}`,
+                target: `${langto}`
+            }),
+            headers: { "Content-Type": "application/json" }
+        });
+
+        let op = await res.json();
+        // console.log(op.translatedText);
+        opt.value = op.translatedText;
+    }
+
+    function fun2() {
+
+        let utter = new SpeechSynthesisUtterance();
+        utter.lang = document.getElementById("langto").value;
+        utter.text = opt.value;
+        utter.volume = 0.5;
+
+        window.speechSynthesis.speak(utter);
+    }
+
+</script>
