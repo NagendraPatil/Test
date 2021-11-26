@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <title>movie1</title>
+    <style>
+        * {
+            font-family: 'Bebas Neue', cursive;
+            background-color: rgba(175, 162, 162, 0.219);
+        }
+
+        #movieholder {
+            display: grid;
+            grid-template-columns: 22% 22% 22% 22%;
+            gap: 4%;
+            margin: 20px auto;
+            text-align: center;
+            border: 1px solid black;
+            background-color: rgba(128, 128, 128, 0.438);
+
+        }
+
+        #movieholder * {
+            margin-top: 20px;
+        }
+
+        #forip {
+            margin: 2rem auto;
+            width: 600px;
+            text-align: center;
+            font-size: 24px;
+            color: indigo;
+        }
+        #foralert{
+            margin: 10px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="color: coral;text-align: center;">SEARCH YOUR FAVOURITE MOVIES DETAILS</h1>
+    <div id="forip">
+        <input type="text" placeholder="Enter movie name you want to search" id="Movie"
+            style="text-align: center;width:400px;height:40px;border: none;border-radius:10px;background-color: white;">
+        <button type="button" onclick="getMovie()"
+            style="border-radius: 5px;width: 80px;height:40px;background-color: antiquewhite;">FIND</button>
+    </div>
+    <div id="foralert" style="display: hidden;"></div>
+    <div id="movieholder">
+    </div>
+</body>
+
+</html>
+<script>
+    async function getMovie() {
+        let movie = document.getElementById("Movie").value;
+        try {
+            let movieInfo = await fetch(`http://www.omdbapi.com/?apikey=94c102f2&t=${movie}`);
+            // console.log(movieInfo);
+            let mData = await movieInfo.json();
+            console.log(mData);
+
+            if (mData.Title !== undefined) {
+                let movieholder = document.getElementById("movieholder");
+                function attachMovie(mData) {
+                    let div = document.createElement("div");
+
+                    let poster = document.createElement('img');
+                    poster.src = mData.Poster;
+
+                    let h1 = document.createElement("h1");
+                    h1.innerHTML = `TITLE : ${mData.Title}`;
+
+                    let h2 = document.createElement("h2");
+                    h2.innerHTML = `CASTING : ${mData.Actors}`;
+
+                    let p = document.createElement("p");
+                    p.innerHTML = `RELEASE DATE : ${mData.Released}`;
+
+                    let div2 = document.createElement("div");
+                    div2.innerHTML = `DURATION : ${mData.Runtime}`;
+
+                    let div3 = document.createElement("div");
+                    div3.innerHTML = `DIRECTOR : ${mData.Director}`;
+
+                    let div4 = document.createElement("div");
+                    div4.innerHTML = `GENRE : ${mData.Genre}`;
+
+                    let h4 = document.createElement("h4");
+                    h4.innerHTML = `IMDB RATING : ${mData.imdbRating}`
+
+                    let recommed = document.createElement("h4");
+                    recommed.innerHTML = "RECOMMENDED";
+                    recommed.style.color = "green";
+
+                    let hr = document.createElement("hr");
+ 
+
+                    if(mData.imdbRating>8){
+                        div.append(poster, h1, h2, p, div2, div3, div4, h4, hr,recommed);
+                    }else{
+                        div.append(poster, h1, h2, p, div2, div3, div4, h4, hr);
+                    }
+
+                    movieholder.prepend(div);
+                }
+                attachMovie(mData);
+
+            } else {
+                let alerter = document.getElementById("foralert");
+                alerter.innerHTML = `OOPS!!!!! " ${movie} " data is not available in our database`+ '<br><img src="https://c.tenor.com/T5akPmPemJkAAAAM/bebezinho-little-baby.gif" style="position:absolute;margin-top:15px"/>';
+                alerter.style.display = "block";
+                alerter.style.height = "250px";
+                alerter.style.width = "400px";
+                alerter.style.padding = "5px 5px"
+
+                let bttn = document.createElement("button");
+
+                bttn.style.width = "30px";
+                bttn.style.height = "30px";
+                bttn.innerText = 'X';
+                bttn.style.fontSize = '10px';
+                bttn.style.textAlign = "centre";
+                bttn.style.backgroundColor = "red";
+                bttn.style.float = "right";
+                bttn.style.marginRight = "10px";
+
+                alerter.append(bttn);
+
+                bttn.onclick = function () {
+                    alerter.innerHTML = "";
+                    alerter.style.height = "";
+                    alerter.style.padding = ""
+                    alerter.style.display = "hidden";
+                }
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+
+</script>
